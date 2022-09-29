@@ -57,9 +57,7 @@ public class LossyLink extends Link {
             }
 
         }
-        System.out.println(droppedPacketCounter + "out of" + sentPackets);
-        System.out.println(jitterList);
+//        System.out.println(droppedPacketCounter + "out of" + sentPackets);
+//        System.out.println(jitterList);
     }
 }
-//System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +
-//        " sent message with seq: "+_seq + " at time "+SimEngine.getTime());
