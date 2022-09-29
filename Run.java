@@ -8,8 +8,8 @@ public class Run {
  		//Creates two links
 // 		Link link1 = new Link();
 //		Link link2 = new Link();
-		Link link1 = new LossyLink(1, 0.5, 0.33);
-		Link link2 = new LossyLink(1, 0.5, 0.33);
+		Link link1 = new LossyLink(0, 0.5, 0.33);
+		Link link2 = new LossyLink(0, 0.5, 0.33);
 
 
 		// Create two end hosts that will be
@@ -17,7 +17,7 @@ public class Run {
 //		Node host1 = new Node(1,1);
 //		Node host2 = new Node(2,1);
 		CBR host1 = new CBR(1,1);
- 		CBR host2 = new CBR(2, 1);
+		Sink host2 = new Sink(2,1);
 // 		Poisson host1 = new Poisson(1,1);
 // 		Poisson host2 = new Poisson(2,1);
 // 		Gaussian host1 = new Gaussian(1,1, 10, 5);
@@ -45,7 +45,7 @@ public class Run {
 //		host2.StartSending(1, 1, 2, 10, 10);
 
 		//CBR
-		host1.StartSending(2, 2, 1000, 5);
+		host1.StartSending(2, 2, 100, 5);
 
 		//Poisson  has runtime of 10 packets and mean value of 5
 		//host1.StartSending(2, 2, 1000, 5.0);

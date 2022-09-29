@@ -1,10 +1,9 @@
 package Sim;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class Sink extends Node{
@@ -12,21 +11,30 @@ public class Sink extends Node{
     public Sink(int network, int node) {
         super(network, node);
     }
-    public static void toFile(String fileName, double time) {
-        try {
+    public static void toFile(String fileName, double time)
+        throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName,true));
+        writer.write(time + "\n");
+        writer.close();
+        }
+    public void recv(SimEnt src, Event ev)
+    {
 
-            PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8);
-            writer.println("CBR: " +time);
+        if (ev instanceof Message)
+        {
+            double time = SimEngine.getTime();
+            try {
+                toFile("Sink_CBR",time );
+//                toFile("Sink_G",time );
+//                toFile("Sink_P",time );
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println(e);
+            }
 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("SinkNode " + _id.networkId() + "." + _id.nodeId() + " receives message with seq: " + ((Message) ev).seq() + " at time " + SimEngine.getTime());
         }
     }
-
-
-
-
 
 
     }
