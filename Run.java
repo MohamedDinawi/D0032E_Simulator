@@ -8,8 +8,8 @@ public class Run {
  		//Creates two links
 // 		Link link1 = new Link();
 //		Link link2 = new Link();
-		Link link1 = new LossyLink(0, 0.5, 0.33);
-		Link link2 = new LossyLink(0, 0.5, 0.33);
+		Link link1 = new LossyLink(0, 0, 0.33);
+		Link link2 = new LossyLink(0, 0, 0.33);
 
 
 		// Create two end hosts that will be
@@ -18,10 +18,10 @@ public class Run {
 //		Node host2 = new Node(2,1);
 //		CBR host1 = new CBR(1,1);
 //		Sink host2 = new Sink(2,1);
-// 		Poisson host1 = new Poisson(1,1);
-// 		Poisson host2 = new Poisson(2,1);
- 		Gaussian host1 = new Gaussian(1,1, 10, 5);
- 		Gaussian host2 = new Gaussian(2,1, 10, 5);
+ 		Poisson host1 = new Poisson(1,1);
+ 		Poisson host2 = new Poisson(2,1);
+// 		Gaussian host1 = new Gaussian(1,1, 10, 5);
+// 		Gaussian host2 = new Gaussian(2,1, 10, 5);
 
 
 
@@ -38,20 +38,15 @@ public class Run {
 		routeNode.connectInterface(0, link1, host1);
 		routeNode.connectInterface(1, link2, host2);
 
-//		 Generate some traffic
-//		host1 will send 3 messages with time interval 5 to network 2, node 1. Sequence starts with number 1
-//		host1.StartSending(2, 2, 3, 5, 1);
-//		host2 will send 2 messages with time interval 10 to network 1, node 1. Sequence starts with number 10
-//		host2.StartSending(1, 1, 2, 10, 10);
 
-//		//CBR
-//		host1.StartSending(2, 2, 100, 5);
+		//CBR
+		//host1.StartSending(2, 2, 100, 5);
 
-		//Poisson  has runtime of 10 packets and mean value of 5
-		//host1.StartSending(2, 2, 1000, 5.0);
+		//Poisson  has runtime of 1000 packets and mean value of 5
+		host1.StartSending(2, 2, 1000, 10);
 
  		//Gaussian
- 		host1.StartSending(2, 2, 1000);
+		//host1.StartSending(2, 2, 1000);
  		//host2.StartSending(2, 2, 10, 10, 5);
 
 		// Start the simulation engine and of we go!

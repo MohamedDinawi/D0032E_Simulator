@@ -60,9 +60,9 @@ public class Gaussian extends Node {
                     _seq++;
 
                 }
-
+                send(this, new TimerEvent(), 1);
             }
-            send(this, new TimerEvent(), 1);
+
         }
         if (ev instanceof Message) {
             System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " receives message with seq: " + ((Message) ev).seq() + " at time " + SimEngine.getTime());
