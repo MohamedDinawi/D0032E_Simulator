@@ -6,22 +6,19 @@ public class Run {
 	public static void main (String [] args)
 	{
  		//Creates two links
-// 		Link link1 = new Link();
-//		Link link2 = new Link();
 		Link link1 = new LossyLink(0, 0, 0.33);
 		Link link2 = new LossyLink(0, 0, 0.33);
 
 
 		// Create two end hosts that will be
 		// communicating via the router
-//		Node host1 = new Node(1,1);
-//		Node host2 = new Node(2,1);
+//
 //		CBR host1 = new CBR(1,1);
 //		Sink host2 = new Sink(2,1);
- 		Poisson host1 = new Poisson(1,1);
- 		Poisson host2 = new Poisson(2,1);
-// 		Gaussian host1 = new Gaussian(1,1, 10, 5);
-// 		Gaussian host2 = new Gaussian(2,1, 10, 5);
+// 		Poisson host1 = new Poisson(1,1);
+// 		Poisson host2 = new Poisson(2,1);
+ 		Gaussian host1 = new Gaussian(1,1, 10, 10);
+ 		Gaussian host2 = new Gaussian(2,1, 10, 10);
 
 
 
@@ -40,14 +37,14 @@ public class Run {
 
 
 		//CBR
-		//host1.StartSending(2, 2, 100, 5);
+//		host1.StartSending(2, 2, 100, 5);
 
 		//Poisson  has runtime of 1000 packets and mean value of 5
-		host1.StartSending(2, 2, 1000, 10);
+//		host1.StartSending(2, 2, 1000, 50);
 
  		//Gaussian
-		//host1.StartSending(2, 2, 1000);
- 		//host2.StartSending(2, 2, 10, 10, 5);
+		host1.StartSending(2, 2, 1000);
+ 		host2.StartSending(2, 2, 1000, 10, 5);
 
 		// Start the simulation engine and of we go!
 		Thread t=new Thread(SimEngine.instance());

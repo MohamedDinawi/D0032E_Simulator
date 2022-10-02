@@ -1,20 +1,16 @@
 package Sim;
 
 import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 public class LossyLink extends Link {
-    private double delay;
-    private double probability;
-    private Random rnd;
+    private final double delay;
+    private final double probability;
+    private final Random rnd;
     private double jitter;
     private double prevDelay;
 
-    private int droppedPacketCounter;
-    private int sentPackets;
-    List jitterList = new ArrayList();
     public LossyLink(double delay, double jitter, double probability) {
 
         this.delay = delay;
@@ -26,7 +22,6 @@ public class LossyLink extends Link {
     public void recv(SimEnt src, Event ev) {
 
         if (ev instanceof Message) {
-            sentPackets++;
             double rnd1 = Math.random();
             if (rnd1 > probability) {
                 double nextdelay = Math.abs(this.delay + rnd.nextDouble(jitter + 1));
@@ -39,7 +34,6 @@ public class LossyLink extends Link {
 
                     jitter = Math.abs(nextdelay - prevDelay); //add comments
                     System.out.println("jitter from A :" + jitter);
-                    jitterList.add(jitter);
                     prevDelay = nextdelay;
 
                     send(_connectorB, ev, nextdelay);
@@ -51,13 +45,8 @@ public class LossyLink extends Link {
 
                     send(_connectorA, ev, nextdelay);
                 }
-            } else {
-                droppedPacketCounter++;
-
             }
 
         }
-//        System.out.println(droppedPacketCounter + "out of" + sentPackets);
-//        System.out.println(jitterList);
     }
 }

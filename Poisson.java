@@ -40,6 +40,7 @@ import java.util.Random;
 
         private double poissonDouble(double mean) {
             Random rnd = new Random();
+
             int x = 0;
             double a = rnd.nextDouble();
             double p = Math.exp(-mean);
@@ -60,14 +61,15 @@ import java.util.Random;
                     for (int i = 0; i < nrOfPackets; i++) {
 
                         double poissonD = poissonDouble(mean);
-                        System.out.println("starts sending...1");
+
+
                         try {
-                            Sink.toFile("poissonD.txt", poissonD);
+                            Sink.toFile("poissonD.txt", poissonD/100);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                         _sentmsg++;
-                        send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), poissonD);
+                        send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), poissonD/100);
                         System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
                         _seq++;
 

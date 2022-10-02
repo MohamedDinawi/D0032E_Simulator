@@ -9,9 +9,9 @@ public class Gaussian extends Node {
     private int _toNetwork = 0;
     private int _seq;
     private int _toHost = 0;
-    private Random rnd;
-    private double mean;
-    private double deviation;
+    private final Random rnd;
+    private final double mean;
+    private final double deviation;
 
 
     public Gaussian(int network, int node, double mean, double deviation) {

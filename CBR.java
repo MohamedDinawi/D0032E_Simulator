@@ -4,10 +4,10 @@ import java.io.IOException;
 
 public class CBR extends Node {
 
+    protected int nrOfPackets;
     private int _toNetwork = 0;
     private int _seq;
     private int _toHost = 0;
-    protected int nrOfPackets;
     private int timeInterval;
 
 
@@ -41,6 +41,7 @@ public class CBR extends Node {
 
                 double time = SimEngine.getTime();
                 for (int i = 0; i < nrOfPackets; i++) {
+                    time += 1.0 / nrOfPackets;
                     System.out.println("starts sending...1");
                     try {
                         Sink.toFile("CBR.txt", time);
@@ -48,10 +49,10 @@ public class CBR extends Node {
                         throw new RuntimeException(e);
                     }
                     _sentmsg++;
-                    send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost),_seq), 0);
-                    System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+ SimEngine.getTime());
+                    send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
+                    System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
                     _seq++;
-                    time += 1.0/nrOfPackets;
+
                 }
                 send(this, new TimerEvent(), 1);
             }
