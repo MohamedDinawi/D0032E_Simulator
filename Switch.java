@@ -4,8 +4,8 @@ package Sim;
 
 public class Switch extends SimEnt{
 
-	private final SwitchTableEntry [] _switchTable;
-	private final int _ports;
+	private SwitchTableEntry [] _switchTable;
+	private int _ports;
 	
 	// When creating the switch, the number of ports must be specified
 	

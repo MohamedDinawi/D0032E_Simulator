@@ -42,7 +42,6 @@ public class CBR extends Node {
                 double time = SimEngine.getTime();
                 for (int i = 0; i < nrOfPackets; i++) {
                     time += 1.0 / nrOfPackets;
-                    System.out.println("starts sending...1");
                     try {
                         Sink.toFile("CBR.txt", time);
                     } catch (IOException e) {

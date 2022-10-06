@@ -6,6 +6,6 @@ package Sim;
 // when the event triggers.
 
 public interface Event {
-	void entering(SimEnt locale);
+	public void entering(SimEnt locale);
 }
 

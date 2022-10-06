@@ -6,8 +6,8 @@ package Sim;
 // the host part.
 
 public class NetworkAddr {
-	private final int _networkId;
-	private final int _nodeId;
+	private int _networkId;
+	private int _nodeId;
 	
 	NetworkAddr(int network, int node)
 	{
