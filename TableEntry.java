@@ -5,8 +5,8 @@ package Sim;
 
 public class TableEntry {
 
-	private SimEnt _link;
-	private SimEnt _node;
+	private final SimEnt _link;
+	private final SimEnt _node;
 	
 	TableEntry(SimEnt link, SimEnt node)
 	{

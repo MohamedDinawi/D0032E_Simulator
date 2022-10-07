@@ -43,9 +43,6 @@ public class Node extends SimEnt {
 	private int _timeBetweenSending = 10; //time between messages
 	private int _toNetwork = 0;
 	private int _toHost = 0;
-
-	private int _changeInterfaceAfter = -1;
-	private int _newInterfaceNumber = 0;
 	
 	public void StartSending(int network, int node, int number, int timeInterval, int startSeq)
 	{
@@ -54,18 +51,12 @@ public class Node extends SimEnt {
 		_toNetwork = network;
 		_toHost = node;
 		_seq = startSeq;
-
 		send(this, new TimerEvent(),0);	
-	}
-
-	public void changeInterface(int interfaceNumber, int packetsSent)
-	{
-		_changeInterfaceAfter = packetsSent;
-		_newInterfaceNumber = interfaceNumber;
 	}
 	
 //**********************************************************************************	
-	
+
+
 	// This method is called upon that an event destined for this node triggers.
 	
 	public void recv(SimEnt src, Event ev)
@@ -79,11 +70,6 @@ public class Node extends SimEnt {
 				send(this, new TimerEvent(),_timeBetweenSending);
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 				_seq++;
-
-				if(_sentmsg == _changeInterfaceAfter){
-					System.out.println("NODE "+_id.networkId()+"."+_id.nodeId()+" WILL MOVE TO INTERFACE NUMBER: "+_newInterfaceNumber);
-					send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
-				}
 			}
 		}
 		if (ev instanceof Message)
