@@ -22,6 +22,7 @@ public class Run {
 
 		host1.StartSending(2, 2, 10, 3, 1);
 		host1.changeInterface(3,10);
+
 		// Start the simulation engine and of we go!
 		Thread t=new Thread(SimEngine.instance());
 

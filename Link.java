@@ -12,7 +12,8 @@ public class Link extends SimEnt {
 
 	public Link() {
 	}
-
+	// Connects the link to some simulation entity like
+	// a node, switch, router etc.
 	public void setConnector(SimEnt connectTo) {
 		if (this._connectorA == null) {
 			this._connectorA = connectTo;
@@ -21,7 +22,7 @@ public class Link extends SimEnt {
 		}
 
 	}
-
+	// Called when a message enters the link
 	public void recv(SimEnt src, Event ev) {
 		if (ev instanceof Message || ev instanceof ChangeInterface) {
 			System.out.println("Link recv msg, passes it through");

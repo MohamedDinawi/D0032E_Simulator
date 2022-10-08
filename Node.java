@@ -9,8 +9,8 @@ public class Node extends SimEnt {
 	protected int _sentmsg=0;
 	protected int _seq = 0;
 
-	private int _changeInterfaceAfter = -1;
-	private int _newInterfaceNumber = 0;
+	private int _msgSent ;
+	private int _newInterfaceNumber;
 
 	public Node (int network, int node)
 	{
@@ -58,7 +58,7 @@ public class Node extends SimEnt {
 
 	public void changeInterface(int interfaceNumber, int packetsSent)
 	{
-		_changeInterfaceAfter = packetsSent;
+		_msgSent = packetsSent;
 		_newInterfaceNumber = interfaceNumber;
 	}
 //**********************************************************************************
@@ -77,9 +77,9 @@ public class Node extends SimEnt {
 				send(this, new TimerEvent(),_timeBetweenSending);
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 				_seq++;
-
-				if(_sentmsg == _changeInterfaceAfter){
-					System.out.println("INTERFACE CHANGE "+_id.networkId()+"."+_id.nodeId()+" changing to "+_newInterfaceNumber);
+				//Change interface after _msgSent amount massages
+				if(_sentmsg == _msgSent){
+					System.out.println("Change interface "+_id.networkId()+"."+_id.nodeId()+" changing to interface "+_newInterfaceNumber);
 					send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
 				}
 			}

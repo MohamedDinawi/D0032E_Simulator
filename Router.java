@@ -65,6 +65,7 @@ public class Router extends SimEnt{
 	}
 
 	private void printAllInterfaces() {
+		System.out.println("============================================");
 		for(int i = 0; i < this._routingTable.length; ++i) {
 			if (this._routingTable[i] == null) {
 				System.out.println("Interface " + i + " is null");
@@ -72,6 +73,7 @@ public class Router extends SimEnt{
 				System.out.println("Interface " + i + " has node: " + ((Node)this._routingTable[i].node()).getAddr().nodeId() + ". " + ((Node)this._routingTable[i].node()).getAddr().networkId());
 			}
 		}
+		System.out.println("============================================");
 
 	}
 
@@ -80,15 +82,13 @@ public class Router extends SimEnt{
 
 	public void recv(SimEnt source, Event event)
 	{
-		System.out.println(event instanceof ChangeInterface);
+
 		if (event instanceof ChangeInterface) {
-			System.out.println("========! Tabel before moving !=========");
+
 			this.printAllInterfaces();
-			System.out.println("========! End tabel !=========");
 			this.changeInterface(((ChangeInterface)event).getSource(), ((ChangeInterface)event).getNewInterfaceNumber());
-			System.out.println("========! Tabel After moving !=========");
 			this.printAllInterfaces();
-			System.out.println("========! End tabel !=========");
+
 		}
 
 		if (event instanceof Message)
