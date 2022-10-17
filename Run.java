@@ -6,22 +6,46 @@ public class Run {
 	public static void main (String [] args)
 	{
 
-		Link link1 = new Link();
-		Link link2 = new Link();
+		// Links
+		Link a = new Link();
+		Link b = new Link();
+		Link r = new Link();
+		Link c = new Link();
 
-		Node host1 = new Node(1,1);
-		Node host2 = new Node(2,1);
+		// Hosts
+		Node A = new Node(1, 1);
+		Node B = new Node(1, 2);
+		Node C = new Node(2, 3);
 
-		host1.setPeer(link1);
-		host2.setPeer(link2);
+		//Connect hosts to links
+		A.setPeer(a);
+		B.setPeer(b);
+		C.setPeer(c);
 
-		Router routeNode = new Router(4);
-		routeNode.connectInterface(0, link1, host1);
-		routeNode.connectInterface(1, link2, host2);
+		// Routers
+		Router R1 = new Router(1, 4);
+		Router R2 = new Router(2, 4);
 
 
-		host1.StartSending(2, 2, 10, 3, 1);
-		host1.changeInterface(3,10);
+		// Wire up routers
+		R1.connectInterface(0, a, A);
+		R1.connectInterface(1, b, B);
+		R1.connectInterface(2, r, R2);
+
+		R2.connectInterface(0, c, C);
+		R2.connectInterface(0, r, R1);
+
+
+		// A and C send two packets to B; B send two packets to A
+		// The first packets will be sent *before* B migrates
+		// The seconds packets will be sent *after* B migrates
+		A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 0, 0);
+		C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
+		B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 2, 40, 4, 20);
+
+		// migrate B to network 2
+		B.send(R2, new RegistrationRequest(R1), 30);
+
 
 		// Start the simulation engine and of we go!
 		Thread t=new Thread(SimEngine.instance());
@@ -35,8 +59,7 @@ public class Run {
 		{
 			System.out.println("The motor seems to have a problem, time for service?");
 		}
-
-
-
+		R1.printRouting(R1.get_routingTable());
+		R2.printRouting(R2.get_routingTable());
 	}
 }

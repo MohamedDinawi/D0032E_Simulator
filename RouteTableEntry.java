@@ -6,9 +6,11 @@ package Sim;
 
 public class RouteTableEntry extends TableEntry{
 
+
 	RouteTableEntry(SimEnt link, SimEnt node)
 	{
 		super(link, node);
+
 	}
 	
 	public SimEnt link()

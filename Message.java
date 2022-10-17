@@ -5,8 +5,8 @@ package Sim;
 // number
 
 public class Message implements Event{
-	private final NetworkAddr _source;
-	private final NetworkAddr _destination;
+	private NetworkAddr _source;
+	private NetworkAddr _destination;
 	private int _seq=0;
 	
 	Message (NetworkAddr from, NetworkAddr to, int seq)
@@ -24,6 +24,9 @@ public class Message implements Event{
 	public NetworkAddr destination()
 	{
 		return _destination; 
+	}
+	public void setDestination(NetworkAddr new_address) {
+		_destination = new_address;
 	}
 	
 	public int seq()

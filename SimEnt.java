@@ -13,7 +13,7 @@ public abstract class SimEnt {
 	// Called when erasing an entity like node or link etc. The SimEngine is called in case
 	// that de-registration of the entity is needed 
 	
-	protected final void kill()
+	protected void kill()
 	{
 		this.destructor();
 	}
@@ -27,16 +27,17 @@ public abstract class SimEnt {
 	
 	// This method schedules a coming event in the SimEngine
 	
-	protected final EventHandle send(SimEnt destination, Event event, double delayExecution)
+	protected EventHandle send(SimEnt destination, Event event, double delayExecution)
 	{
 		// this object is the registrator/source submitting the event
 		return SimEngine.instance().register(this, destination, event, delayExecution);
+
 	}
 	
 	
 	//Erases a scheduled event from the SimEngine
 	
-	protected final void eraseScheduledEvent(EventHandle handleToEvent)
+	protected void eraseScheduledEvent(EventHandle handleToEvent)
 	{
 		SimEngine.instance().deregister(handleToEvent);
 	}
