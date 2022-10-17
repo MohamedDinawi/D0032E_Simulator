@@ -81,6 +81,7 @@ public class Node extends SimEnt {
 				send(this, new TimerEvent(),_timeBetweenSending);
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 				_seq++;
+
 				//Change interface after _msgSent amount massages
 				if(_sentmsg == _msgSent){
 					System.out.println("Change interface "+_id.networkId()+"."+_id.nodeId()+" changing to interface "+_newInterfaceNumber);

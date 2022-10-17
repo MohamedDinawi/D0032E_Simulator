@@ -59,7 +59,7 @@ public class Run {
 		{
 			System.out.println("The motor seems to have a problem, time for service?");
 		}
-		R1.printRouting(R1.get_routingTable());
-		R2.printRouting(R2.get_routingTable());
+		R1.printAllInterfaces(R1.get_routingTable());
+		R2.printAllInterfaces(R2.get_routingTable());
 	}
 }

@@ -12,8 +12,8 @@ public class Router extends SimEnt {
     // When created, number of interfaces are defined
 
 
-    Router(int RID, int interfaces) {
-        this._RID = RID;
+    Router(int RouterID, int interfaces) {
+        this._RID = RouterID;
         _routingTable = new RouteTableEntry[interfaces];
         _interfaces = interfaces;
         bindings = new HashMap<>();
@@ -35,7 +35,6 @@ public class Router extends SimEnt {
     // the network number in the destination field of a messages. The link
     // represents that network number is returned
 
-
     private SimEnt getInterface(NetworkAddr addr) {
         SimEnt routerInterface;
         for (int i = 0; i < _interfaces; i++)
@@ -43,7 +42,6 @@ public class Router extends SimEnt {
                 SimEnt dev = _routingTable[i].node();
 
                 if (dev instanceof Node node) {
-
                     if (node.getAddr().equals(addr)) {
                         routerInterface = _routingTable[i].link();
                         return routerInterface;
@@ -58,6 +56,7 @@ public class Router extends SimEnt {
             }
 
         // not found
+        System.out.println("NOT FOUND");
         return null;
     }
 
@@ -105,40 +104,26 @@ public class Router extends SimEnt {
     }
 
 
-    private void printAllInterfaces() {
-        System.out.println("============================================");
-        for (int i = 0; i < this._routingTable.length; ++i) {
-            if (this._routingTable[i] == null) {
-                System.out.println("Interface " + i + " is null");
-            } else {
-                System.out.println("Interface " + i + " has node: " + ((Node) this._routingTable[i].node()).getAddr().nodeId() + ". " + ((Node) this._routingTable[i].node()).getAddr().networkId());
-            }
-        }
-        System.out.println("============================================");
-
-    }
 
     public RouteTableEntry[] get_routingTable() {
         return _routingTable;
     }
 
-    public void printRouting(RouteTableEntry[] _routingTable) {
-        System.out.println("\nNode table for R" + _RID);
+    public void printAllInterfaces(RouteTableEntry[] _routingTable) {
+        System.out.println("============================================");
+        System.out.println("Node table for R" + _RID);
         for (int i = 0; i < _routingTable.length; i++) {
             try {
-
-                // System.out.println("Entry " + i + ": " + _routingTable[i] + " : " + _routingTable[i]. ());
-                System.out.println("Entry " + i + ": Node: " +
-                        ((Node) _routingTable[i].node())._id.networkId() + "." + ((Node) _routingTable[i].node())._id.nodeId());
+                System.out.println("Interface " + i + " has node: " + ((Node) this._routingTable[i].node()).getAddr().nodeId() + ". " + ((Node) this._routingTable[i].node()).getAddr().networkId());
             } catch (Exception e) {
                 if (_routingTable[i] == null) {
-                    System.out.println("Entry " + i + ": -");
+                    System.out.println("Interface " + i + " is null");
                 } else {
-                    System.out.println("Entry " + i + ": RID: " + ((Router) _routingTable[i].node())._RID);
+                    System.out.println("Interface " + i + ": RouterID: " + ((Router) _routingTable[i].node())._RID);
                 }
             }
         }
-        System.out.println();
+        System.out.println("============================================");;
     }
 
     private int nextFreeSlot() {
@@ -160,9 +145,9 @@ public class Router extends SimEnt {
 
         if (event instanceof ChangeInterface) {
 
-            this.printAllInterfaces();
+//            this.printAllInterfaces();
             this.changeInterface(((ChangeInterface) event).getSource(), ((ChangeInterface) event).getNewInterfaceNumber());
-            this.printAllInterfaces();
+//            this.printAllInterfaces();
 
         }
 
@@ -170,8 +155,6 @@ public class Router extends SimEnt {
             NetworkAddr msource = m.source();
             NetworkAddr mdestination = m.destination();
             NetworkAddr coa = bindings.get(mdestination);
-            System.out.println(msource);
-
             if (coa != null) {
                 // tunnel message to the care-of address
                 System.out.println("HA: Tunneling message from " + mdestination.toString() + " to " + coa);
