@@ -9,8 +9,8 @@ public class Run {
 		// Links
 		Link a = new LossyLink(1,0.33,0.1);
 		Link b = new Link();
-		Link r = new Link();
-		Link c = new Link();
+//		Link r = new Link();
+//		Link c = new Link();
 
 		// Hosts
 		Node A = new Node(1, 1);
@@ -30,7 +30,7 @@ public class Run {
 		// Wire up routers
 		R1.connectInterface(0, a, A);
 		R1.connectInterface(1, b, B);
-		R1.connectInterface(2, r, R2);
+//		R1.connectInterface(2, r, R2);
 
 //		R2.connectInterface(0, c, C);
 //		R2.connectInterface(0, r, R1);
@@ -39,7 +39,7 @@ public class Run {
 		// A and C send two packets to B; B send two packets to A
 		// The first packets will be sent *before* B migrates
 		// The seconds packets will be sent *after* B migrates
-		A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 3, 40, 1, 0);
+		A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 1, 40, 1, 0);
 //		C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
 //		B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 3, 40, 10, 20);
 
@@ -63,9 +63,6 @@ public class Run {
 //		R1.printAllInterfaces(R1.get_routingTable());
 //		R2.printAllInterfaces(R2.get_routingTable());
 
-		A.removeLostpackets();
-		A.getLostpackets();
-//		B.getLostpackets();
 
 	}
 }
