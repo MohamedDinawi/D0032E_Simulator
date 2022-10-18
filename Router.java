@@ -114,7 +114,7 @@ public class Router extends SimEnt {
         System.out.println("Node table for R" + _RID);
         for (int i = 0; i < _routingTable.length; i++) {
             try {
-                System.out.println("Interface " + i + " has node: " + ((Node) this._routingTable[i].node()).getAddr().nodeId() + ". " + ((Node) this._routingTable[i].node()).getAddr().networkId());
+                System.out.println("Interface " + i + " has node: "+ ((Node) this._routingTable[i].node()).getAddr().networkId()  + ". " + ((Node) this._routingTable[i].node()).getAddr().nodeId());
             } catch (Exception e) {
                 if (_routingTable[i] == null) {
                     System.out.println("Interface " + i + " is null");
@@ -123,7 +123,7 @@ public class Router extends SimEnt {
                 }
             }
         }
-        System.out.println("============================================");;
+        System.out.println("============================================");
     }
 
     private int nextFreeSlot() {
