@@ -1,6 +1,5 @@
 package Sim;
-import java.util.ArrayList;
-import java.util.List;
+
 // An example of how to build a topology and starting the simulation engine
 
 public class Run {
@@ -8,7 +7,7 @@ public class Run {
 	{
 
 		// Links
-		Link a = new LossyLink(1,0.33,0.7);
+		Link a = new LossyLink(1,0.33,0.1);
 		Link b = new Link();
 		Link r = new Link();
 		Link c = new Link();
@@ -34,7 +33,7 @@ public class Run {
 		R1.connectInterface(2, r, R2);
 
 //		R2.connectInterface(0, c, C);
-		R2.connectInterface(0, r, R1);
+//		R2.connectInterface(0, r, R1);
 
 
 		// A and C send two packets to B; B send two packets to A
@@ -42,10 +41,11 @@ public class Run {
 		// The seconds packets will be sent *after* B migrates
 		A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 3, 40, 1, 0);
 //		C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
-		B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 3, 40, 10, 20);
+//		B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 3, 40, 10, 20);
 
 		// migrate B to network 2
 //		B.send(R2, new RegistrationRequest(R1), 30);
+//		B.changeInterface(3,3);
 
 
 		// Start the simulation engine and of we go!
@@ -60,10 +60,12 @@ public class Run {
 		{
 			System.out.println("The motor seems to have a problem, time for service?");
 		}
-		R1.printAllInterfaces(R1.get_routingTable());
-		R2.printAllInterfaces(R2.get_routingTable());
-		a= new Node();
-		List<Integer> list = getLostpackets();
-		System.out.println(list);
+//		R1.printAllInterfaces(R1.get_routingTable());
+//		R2.printAllInterfaces(R2.get_routingTable());
+
+		A.removeLostpackets();
+		A.getLostpackets();
+//		B.getLostpackets();
+
 	}
 }

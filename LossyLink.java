@@ -1,16 +1,18 @@
 package Sim;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
 
 public class LossyLink extends Link {
-    private final double delay;
-    private final double probability;
-    private final Random rnd;
+    private  double delay;
+    private  double probability;
+    private  Random rnd;
     private double jitter;
     private double prevDelay;
-
+//    public List<Integer> lostpackets = new ArrayList<>();
     public LossyLink(double delay, double jitter, double probability) {
 
         this.delay = delay;
@@ -29,6 +31,11 @@ public class LossyLink extends Link {
 
                 System.out.println("Link recv msg with seq: " +
                         ((Message) ev).seq() + " , passes it through");
+//                System.out.println(((Message) ev).seq()+"LossylinkPacket");
+//                lostpackets.add(((Message) ev).seq());
+//                System.out.println(lostpackets+"LossylinkPacket");
+
+
 
                 if (src == _connectorA) {
 

@@ -1,108 +1,114 @@
 package Sim;
+
 import java.util.ArrayList;
 import java.util.List;
 // This class implements a node (host) it has an address, a peer that it communicates with
 // and it count messages send and received.
 
 public class Node extends SimEnt {
-	protected NetworkAddr _id;
-	protected SimEnt _peer;
-	protected int _sentmsg=0;
-	protected int _seq = 0;
-
-	private int _msgSent ;
-	private int _newInterfaceNumber;
-	public List<Integer> lostpackets;
-
-	public List<Integer> getLostpackets() {
-		return lostpackets;
-	}
-
-	public Node (int network, int node)
-	{
-		super();
-		_id = new NetworkAddr(network, node);
-	}
+    public List<Integer> lostpackets = new ArrayList<>();
+    protected NetworkAddr _id;
+    protected SimEnt _peer;
+    protected int _sentmsg = 0;
+    protected int _seq = 0;
+    private int _msgSent;
+    private int _newInterfaceNumber;
+    private int packetNr;
+    private int _stopSendingAfter = 0; //messages
+    private int _timeBetweenSending = 10; //time between messages
+    private int _toNetwork = 0;
+    public int mes;
 
 
-	// Sets the peer to communicate with. This node is single homed
-
-	public void setPeer (SimEnt peer)
-	{
-		_peer = peer;
-
-		if(_peer instanceof Link )
-		{
-			 ((Link) _peer).setConnector(this);
-		}
-	}
+    // Sets the peer to communicate with. This node is single homed
+    private int _toHost = 0;
 
 
-	public NetworkAddr getAddr()
-	{
-		return _id;
-	}
+    public Node(int network, int node) {
+        super();
+        _id = new NetworkAddr(network, node);
+    }
 
 //**********************************************************************************
-	// Just implemented to generate some traffic for demo.
-	// In one of the labs you will create some traffic generators
+    // Just implemented to generate some traffic for demo.
+    // In one of the labs you will create some traffic generators
 
-	private int _stopSendingAfter = 0; //messages
-	private int _timeBetweenSending = 10; //time between messages
-	private int _toNetwork = 0;
-	private int _toHost = 0;
+    public List<Integer> getLostpackets() {
+        System.out.println(lostpackets + "Packet list");
+        return lostpackets;
+    }
 
-	public void StartSending(int network, int node, int number, int timeInterval, int startSeq, int delay)
-	{
-		_stopSendingAfter = number;
-		_timeBetweenSending = timeInterval;
-		_toNetwork = network;
-		_toHost = node;
-		_seq = startSeq;
-		send(this, new TimerEvent(),delay);
-	}
+    public void removeLostpackets() {
+        System.out.println(packetNr + "packetNR");
+        lostpackets.remove(Integer.valueOf(packetNr));
+        System.out.println(lostpackets + "LOST");
+    }
 
-	public void changeInterface(int interfaceNumber, int packetsSent)
-	{
-		_msgSent = packetsSent;
-		_newInterfaceNumber = interfaceNumber;
-	}
-	public String toString() {
-		return "Node(" + getAddr().toString() + ")";
-	}
+    public void setPeer(SimEnt peer) {
+        _peer = peer;
+
+        if (_peer instanceof Link) {
+            ((Link) _peer).setConnector(this);
+        }
+    }
+
+    public NetworkAddr getAddr() {
+        return _id;
+    }
+
+    public void StartSending(int network, int node, int number, int timeInterval, int startSeq, int delay) {
+        _stopSendingAfter = number;
+        _timeBetweenSending = timeInterval;
+        _toNetwork = network;
+        _toHost = node;
+        _seq = startSeq;
+        send(this, new TimerEvent(), delay);
+    }
+
+    public void changeInterface(int interfaceNumber, int packetsSent) {
+        _msgSent = packetsSent;
+        _newInterfaceNumber = interfaceNumber;
+    }
+
+    public String toString() {
+        return "Node(" + getAddr().toString() + ")";
+    }
 
 //**********************************************************************************
 
 
-	// This method is called upon that an event destined for this node triggers.
+    // This method is called upon that an event destined for this node triggers.
 
-	public void recv(SimEnt src, Event ev)
-	{
-		if (ev instanceof TimerEvent)
-		{
-			if (_stopSendingAfter > _sentmsg)
-			{
-				_sentmsg++;
-				send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost),_seq),0);
-				send(this, new TimerEvent(),_timeBetweenSending);
-				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
-				lostpackets.add(_seq);
-				_seq++;
-				System.out.println(lostpackets);
+    public void recv(SimEnt src, Event ev) {
+        if (ev instanceof TimerEvent) {
+            if (_stopSendingAfter > _sentmsg) {
+                _sentmsg++;
+                send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
+                send(this, new TimerEvent(), _timeBetweenSending);
+                System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
+                lostpackets.add((_seq));
+                this.mes = _seq;
+                System.out.println(this.mes);
+                System.out.println("ADDED" + _seq);
+                _seq++;
 
-				//Change interface after _msgSent amount massages
-				if(_sentmsg == _msgSent){
-					System.out.println("Change interface "+_id.networkId()+"."+_id.nodeId()+" changing to interface "+_newInterfaceNumber);
-					send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
-				}
-			}
-		}
-		if (ev instanceof Message)
-		{
-			System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" receives message with seq: "+((Message) ev).seq() + " at time "+SimEngine.getTime());
-			lostpackets.remove(Integer.valueOf(_seq));
+                //Change interface after _msgSent amount massages
+                if (_sentmsg == _msgSent) {
+                    System.out.println("Change interface " + _id.networkId() + "." + _id.nodeId() + " changing to interface " + _newInterfaceNumber);
+                    send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
+
+                }
+            }
+        }
+        if (ev instanceof Message) {
+            System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " receives message with seq: " + ((Message) ev).seq() + " at time " + SimEngine.getTime());
+            packetNr = ((Message) ev).seq();
+            System.out.println("SHOULD REMOVE" + packetNr);
+            System.out.println(lostpackets);
+            System.out.println(getLostpackets() + "GETPACKETS");
+            System.out.println(this.mes);
 
 
-		}
-	}
+        }
+    }
 }
