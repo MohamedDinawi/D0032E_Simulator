@@ -44,20 +44,6 @@ public class Run {
 //		C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
 //		B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 3, 40, 10, 20);
 
-        System.out.println();
-        ArrayList<Integer> sentPackets = R1.getPackets();
-        ArrayList<Integer> receivedPackets = B.getPacketsRecv();
-        ArrayList<Event> EventsSent = R1.getPacketsev();
-
-        System.out.println(sentPackets);
-        System.out.println(EventsSent);
-        System.out.println(receivedPackets);
-
-        sentPackets.removeAll(receivedPackets);
-        System.out.println(sentPackets);
-
-        R1.EVToSend();
-        R1.Buffer();
 
         // migrate B to network 2
 //		B.send(R2, new RegistrationRequest(R1), 30);
@@ -76,14 +62,7 @@ public class Run {
 //		R1.printAllInterfaces(R1.get_routingTable());
 //		R2.printAllInterfaces(R2.get_routingTable());
 
-        System.out.println();
 
-        System.out.println(sentPackets);
-        System.out.println(EventsSent);
-        System.out.println(receivedPackets);
-
-        sentPackets.removeAll(receivedPackets);
-        System.out.println(sentPackets);
 
 
     }
