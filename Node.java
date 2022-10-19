@@ -1,6 +1,6 @@
 package Sim;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 // This class implements a node (host) it has an address, a peer that it communicates with
 // and it count messages send and received.
 
@@ -15,7 +15,17 @@ public class Node extends SimEnt {
     private int _timeBetweenSending = 10; //time between messages
     private int _toNetwork = 0;
 
-    protected ArrayList<Integer> packetsRecv = new ArrayList<Integer>();
+    protected ArrayList<Integer> packetsRecv = new ArrayList<>();
+    protected ArrayList<Integer> sentPackets = new ArrayList<>();
+
+
+    public ArrayList<Integer> getPacketsToSend() {
+        return packetsToSend;
+    }
+
+    protected ArrayList<Integer> packetsToSend = new ArrayList<>();
+
+
     private boolean isRecv = true;
 
     // Sets the peer to communicate with. This node is single homed
@@ -57,6 +67,10 @@ public class Node extends SimEnt {
         _msgSent = packetsSent;
         _newInterfaceNumber = interfaceNumber;
     }
+    public void bufferPackets( ArrayList<Integer> packetsToSend, int packetsSent) {
+        _msgSent = packetsSent;
+        sentPackets = packetsToSend;
+    }
 
     public String toString() {
         return "Node(" + getAddr().toString() + ")";
@@ -81,15 +95,26 @@ public class Node extends SimEnt {
                 send(this, new TimerEvent(), _timeBetweenSending);
                 System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
                 isRecv = false;
+                sentPackets.add(_seq);
 
-                _seq++;
 
-                //Change interface after _msgSent amount massages
                 if (_sentmsg == _msgSent) {
-                    System.out.println("Change interface " + _id.networkId() + "." + _id.nodeId() + " changing to interface " + _newInterfaceNumber);
-                    send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
+                    System.out.println("Resending Lost Packets from " + _id.networkId() + "." + _id.nodeId() + " To " + _toNetwork);
+                    send(_peer, new BufferPackets(_id, new NetworkAddr(_toNetwork, _toHost), packetsToSend), 0);
 
                 }
+
+
+                //Change interface after _msgSent amount massages
+//                if (_sentmsg == _msgSent) {
+//                    System.out.println("Change interface " + _id.networkId() + "." + _id.nodeId() + " changing to interface " + _newInterfaceNumber);
+//                    send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
+//
+//                }
+
+
+
+                _seq++;
             }
         }
         if (ev instanceof Message) {
@@ -99,10 +124,7 @@ public class Node extends SimEnt {
             packetsRecv.add(((Message) ev).seq());
             isRecv = true;
 
-
-
-
-
     }
 }
+
 }

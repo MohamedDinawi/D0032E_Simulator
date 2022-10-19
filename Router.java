@@ -89,28 +89,58 @@ public class Router extends SimEnt {
         }
     }
 
+    private void BufferPackets(NetworkAddr source,NetworkAddr destination, ArrayList<Integer> packetsToSend){
+        //        int j = 0;
+//        for (int i = 0; i < packets.size(); i++) {
+//            int addEV = packets.get(j) - 1;
+//            addPacketsEVToSend(packetsev.get(addEV));
+//            j++;
+
+    }
+
+//    public ArrayList<Event> EVToSend() {
+//        int j = 0;
+//        for (int i = 0; i < packets.size(); i++) {
+//            int addEV = packets.get(j) - 1;
+//            addPacketsEVToSend(packetsev.get(addEV));
+//            j++;
+//        }
+//        return packetsevToSend;
+//    }
+//    public void Buffer() {
+//        Node routerNode = new Node(1,3);
+//        System.out.println();
+//
+//        for (int i = 0; i < packetsevToSend.size(); i++) {
+//            Event event = packetsevToSend.get(i);
+//
+//
+//            System.out.println("RE Router handles packet with seq: " + ((Message) event).seq() + " from node: " + ((Message) event).source().networkId() + "." + ((Message) event).source().nodeId());
+//            SimEnt sendNext = getInterfaceA(((Message) event).destination().networkId());
+//            System.out.println("RE Router sends to node: " + ((Message) event).destination().networkId() + "." + ((Message) event).destination().nodeId());
+//
+//            routerNode.recv( sendNext, event);
+//
+//        }
+//    }
+
     /// Returns a node id that's not currently being used
     private int newNodeId() {
         int nid = 0;
-
         while (true) {
             boolean taken = false;
             for (RouteTableEntry entry : _routingTable) {
                 if (entry == null) {
                     continue;
                 }
-
                 SimEnt dev = entry.node();
-
                 if (dev instanceof Node node) {
-
                     if (node._id.nodeId() == nid) {
                         taken = true;
                         break; // try another id
                     }
                 }
             }
-
             if (!taken) {
                 return nid;
             }
@@ -155,6 +185,14 @@ public class Router extends SimEnt {
 
 //            this.printAllInterfaces();
             this.changeInterface(((ChangeInterface) event).getSource(), ((ChangeInterface) event).getNewInterfaceNumber());
+//            this.printAllInterfaces();
+
+        }
+
+        if (event instanceof BufferPackets) {
+
+//            this.printAllInterfaces();
+            this.BufferPackets(((BufferPackets) event).getSource(),((BufferPackets) event).getDestination(), ((BufferPackets) event).getPacketsToSend());
 //            this.printAllInterfaces();
 
         }

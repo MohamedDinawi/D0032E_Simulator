@@ -24,7 +24,8 @@ public class LossyLink extends Link {
 
     public void recv(SimEnt src, Event ev) {
 
-        if (ev instanceof Message) {
+        if (ev instanceof Message || ev instanceof ChangeInterface || ev instanceof BufferPackets){
+            System.out.println(ev instanceof BufferPackets);
             double rnd1 = Math.random();
             if (rnd1 > probability) {
 //                double nextdelay = Math.abs(this.delay + rnd.nextDouble(jitter + 1));

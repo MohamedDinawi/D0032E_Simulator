@@ -5,6 +5,7 @@ package Sim;
 import java.util.ArrayList;
 
 public class Run {
+
     public static void main(String[] args) {
 
         // Links
@@ -37,10 +38,14 @@ public class Run {
 //		R2.connectInterface(0, r, R1);
 
 
+
         // A and C send two packets to B; B send two packets to A
         // The first packets will be sent *before* B migrates
         // The seconds packets will be sent *after* B migrates
         A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 5, 40, 1, 0);
+        System.out.println(A.getPacketsToSend());
+
+        A.bufferPackets(A.getPacketsToSend(), 0);
 //		C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
 //		B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 3, 40, 10, 20);
 
