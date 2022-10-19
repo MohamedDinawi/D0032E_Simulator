@@ -1,6 +1,7 @@
 package Sim;
 // This class implements a simple router
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Router extends SimEnt {
@@ -9,9 +10,11 @@ public class Router extends SimEnt {
     private HashMap<NetworkAddr, NetworkAddr> bindings;
     private int _RID;
     private int _interfaces;
+    private int _now = 0;
+
+
+
     // When created, number of interfaces are defined
-
-
     Router(int RouterID, int interfaces) {
         this._RID = RouterID;
         _routingTable = new RouteTableEntry[interfaces];
@@ -34,6 +37,17 @@ public class Router extends SimEnt {
     // This method searches for an entry in the routing table that matches
     // the network number in the destination field of a messages. The link
     // represents that network number is returned
+
+    private SimEnt getInterfaceA(int networkAddress) {
+        SimEnt routerInterface = null;
+        for (int i = 0; i < _interfaces; i++)
+            if (_routingTable[i] != null) {
+                if (((Node) _routingTable[i].node()).getAddr().networkId() == networkAddress) {
+                    routerInterface = _routingTable[i].link();
+                }
+            }
+        return routerInterface;
+    }
 
     private SimEnt getInterface(NetworkAddr addr) {
         SimEnt routerInterface;
@@ -103,8 +117,6 @@ public class Router extends SimEnt {
         }
     }
 
-
-
     public RouteTableEntry[] get_routingTable() {
         return _routingTable;
     }
@@ -114,7 +126,7 @@ public class Router extends SimEnt {
         System.out.println("Node table for R" + _RID);
         for (int i = 0; i < _routingTable.length; i++) {
             try {
-                System.out.println("Interface " + i + " has node: "+ ((Node) this._routingTable[i].node()).getAddr().networkId()  + ". " + ((Node) this._routingTable[i].node()).getAddr().nodeId());
+                System.out.println("Interface " + i + " has node: " + ((Node) this._routingTable[i].node()).getAddr().networkId() + ". " + ((Node) this._routingTable[i].node()).getAddr().nodeId());
             } catch (Exception e) {
                 if (_routingTable[i] == null) {
                     System.out.println("Interface " + i + " is null");
@@ -132,17 +144,13 @@ public class Router extends SimEnt {
             if (entry == null) {
                 return i;
             }
-
             i++;
         }
-
         return -1;
     }
 
-
     // When messages are received at the router this method is called
     public void recv(SimEnt source, Event event) {
-
         if (event instanceof ChangeInterface) {
 
 //            this.printAllInterfaces();
@@ -151,7 +159,17 @@ public class Router extends SimEnt {
 
         }
 
+//        if (event instanceof Message)
+//        {
+//            System.out.println("Router handles packet with seq: " + ((Message) event).seq()+" from node: "+((Message) event).source().networkId()+"." + ((Message) event).source().nodeId() );
+//            SimEnt sendNext = getInterfaceA(((Message) event).destination().networkId());
+//            System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());
+//            send (sendNext, event, _now);
+//
+//        }
+
         if (event instanceof Message m) {
+
             NetworkAddr msource = m.source();
             NetworkAddr mdestination = m.destination();
             NetworkAddr coa = bindings.get(mdestination);
@@ -163,13 +181,16 @@ public class Router extends SimEnt {
             }
 
             System.out.println("Router " + _RID + " handles packet with seq: " + m.seq() + " from node: " + msource);
+
             SimEnt sendNext = getInterface(mdestination);
+
             if (sendNext == null) {
                 System.err.println("Router " + _RID + ": host " + mdestination + " is unreachable");
             } else {
                 System.out.println("Router sends to node: " + mdestination.toString());
-                int _now = 0;
+
                 send(sendNext, event, _now);
+
             }
         }
 

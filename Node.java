@@ -1,5 +1,6 @@
 package Sim;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 // This class implements a node (host) it has an address, a peer that it communicates with
 // and it count messages send and received.
 
@@ -13,7 +14,9 @@ public class Node extends SimEnt {
     private int _stopSendingAfter = 0; //messages
     private int _timeBetweenSending = 10; //time between messages
     private int _toNetwork = 0;
-    static int[] packetSent = new int[5];
+
+    protected ArrayList<Integer> packetsRecv = new ArrayList<Integer>();
+    private boolean isRecv = true;
 
     // Sets the peer to communicate with. This node is single homed
     private int _toHost = 0;
@@ -64,23 +67,20 @@ public class Node extends SimEnt {
 
     // This method is called upon that an event destined for this node triggers.
 
+    public ArrayList<Integer> getPacketsRecv() {
+        return packetsRecv;
+    }
+
     public void recv(SimEnt src, Event ev) {
         if (ev instanceof TimerEvent) {
+
             if (_stopSendingAfter > _sentmsg) {
                 _sentmsg++;
-
+                System.out.println();
                 send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
                 send(this, new TimerEvent(), _timeBetweenSending);
                 System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
-
-                for (int i = 0; i < packetSent.length; i++) {
-                    packetSent[i] = _seq;
-                }
-
-
-
-
-
+                isRecv = false;
 
                 _seq++;
 
@@ -94,7 +94,15 @@ public class Node extends SimEnt {
         }
         if (ev instanceof Message) {
             System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " receives message with seq: " + ((Message) ev).seq() + " at time " + SimEngine.getTime());
-            System.out.println(packetSent[0]);
-        }
+            System.out.println("RECEIVED" + ((Message) ev).seq());
+            System.out.println();
+            packetsRecv.add(((Message) ev).seq());
+            isRecv = true;
+
+
+
+
+
     }
+}
 }

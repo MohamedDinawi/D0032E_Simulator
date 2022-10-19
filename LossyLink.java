@@ -11,6 +11,7 @@ public class LossyLink extends Link {
     private  double probability;
     private  Random rnd;
     private double jitter;
+    private int _now = 0;
     private double prevDelay;
 //    public List<Integer> lostpackets = new ArrayList<>();
     public LossyLink(double delay, double jitter, double probability) {
@@ -26,7 +27,7 @@ public class LossyLink extends Link {
         if (ev instanceof Message) {
             double rnd1 = Math.random();
             if (rnd1 > probability) {
-                double nextdelay = Math.abs(this.delay + rnd.nextDouble(jitter + 1));
+//                double nextdelay = Math.abs(this.delay + rnd.nextDouble(jitter + 1));
 //                System.out.println("The next delay is  :" + nextdelay);
 
                 System.out.println("Link recv msg with seq: " +
@@ -39,18 +40,18 @@ public class LossyLink extends Link {
 
                 if (src == _connectorA) {
 
-                    jitter = Math.abs(nextdelay - prevDelay); //add comments
-//                    System.out.println("jitter from A :" + jitter);
-                    prevDelay = nextdelay;
+//                    jitter = Math.abs(nextdelay - prevDelay); //add comments
+////                    System.out.println("jitter from A :" + jitter);
+//                    prevDelay = nextdelay;
 
-                    send(_connectorB, ev, nextdelay);
+                    send(_connectorB, ev, _now);
 
                 } else {
-                    jitter = Math.abs(nextdelay - prevDelay);
-//                    System.out.println("jitter from B :" + jitter);
-                    prevDelay = nextdelay;
+//                    jitter = Math.abs(nextdelay - prevDelay);
+////                    System.out.println("jitter from B :" + jitter);
+//                    prevDelay = nextdelay;
 
-                    send(_connectorA, ev, nextdelay);
+                    send(_connectorA, ev, _now);
                 }
             }
 
