@@ -8,7 +8,7 @@ public class Router extends SimEnt {
 
     private RouteTableEntry[] _routingTable;
     private HashMap<NetworkAddr, NetworkAddr> bindings;
-    private int _RID;
+    private int router_ID;
     private int _interfaces;
     private int _now = 0;
 
@@ -16,7 +16,7 @@ public class Router extends SimEnt {
 
     // When created, number of interfaces are defined
     Router(int RouterID, int interfaces) {
-        this._RID = RouterID;
+        this.router_ID = RouterID;
         _routingTable = new RouteTableEntry[interfaces];
         _interfaces = interfaces;
         bindings = new HashMap<>();
@@ -62,7 +62,7 @@ public class Router extends SimEnt {
                     }
                 } else if (dev instanceof Router router) {
 
-                    if (router._RID == addr.networkId()) {
+                    if (router.router_ID == addr.networkId()) {
                         routerInterface = _routingTable[i].link();
                         return routerInterface;
                     }
@@ -126,7 +126,7 @@ public class Router extends SimEnt {
 
     /// Returns a node id that's not currently being used
     private int newNodeId() {
-        int nid = 0;
+        int network_ID = 0;
         while (true) {
             boolean taken = false;
             for (RouteTableEntry entry : _routingTable) {
@@ -135,14 +135,14 @@ public class Router extends SimEnt {
                 }
                 SimEnt dev = entry.node();
                 if (dev instanceof Node node) {
-                    if (node._id.nodeId() == nid) {
+                    if (node._id.nodeId() == network_ID) {
                         taken = true;
                         break; // try another id
                     }
                 }
             }
             if (!taken) {
-                return nid;
+                return network_ID;
             }
         }
     }
@@ -153,7 +153,7 @@ public class Router extends SimEnt {
 
     public void printAllInterfaces(RouteTableEntry[] _routingTable) {
         System.out.println("============================================");
-        System.out.println("Node table for R" + _RID);
+        System.out.println("Node table for R" + router_ID);
         for (int i = 0; i < _routingTable.length; i++) {
             try {
                 System.out.println("Interface " + i + " has node: " + ((Node) this._routingTable[i].node()).getAddr().networkId() + ". " + ((Node) this._routingTable[i].node()).getAddr().nodeId());
@@ -161,7 +161,7 @@ public class Router extends SimEnt {
                 if (_routingTable[i] == null) {
                     System.out.println("Interface " + i + " is null");
                 } else {
-                    System.out.println("Interface " + i + ": RouterID: " + ((Router) _routingTable[i].node())._RID);
+                    System.out.println("Interface " + i + ": RouterID: " + ((Router) _routingTable[i].node()).router_ID);
                 }
             }
         }
@@ -210,20 +210,20 @@ public class Router extends SimEnt {
 
             NetworkAddr msource = m.source();
             NetworkAddr mdestination = m.destination();
-            NetworkAddr coa = bindings.get(mdestination);
-            if (coa != null) {
+            NetworkAddr careOfAddress = bindings.get(mdestination);
+            if (careOfAddress != null) {
                 // tunnel message to the care-of address
-                System.out.println("HA: Tunneling message from " + mdestination.toString() + " to " + coa);
-                mdestination = coa;
-                m.setDestination(coa);
+                System.out.println("homeAgent: Tunneling message from " + mdestination.toString() + " to " + careOfAddress);
+                mdestination = careOfAddress;
+                m.setDestination(careOfAddress);
             }
 
-            System.out.println("Router " + _RID + " handles packet with seq: " + m.seq() + " from node: " + msource);
+            System.out.println("Router " + router_ID + " handles packet with seq: " + m.seq() + " from node: " + msource);
 
             SimEnt sendNext = getInterface(mdestination);
 
             if (sendNext == null) {
-                System.err.println("Router " + _RID + ": host " + mdestination + " is unreachable");
+                System.err.println("Router " + router_ID + ": host " + mdestination + " is unreachable");
             } else {
                 System.out.println("Router sends to node: " + mdestination.toString());
 
@@ -236,32 +236,32 @@ public class Router extends SimEnt {
         // Registration request by a mobile node
         if (event instanceof RegistrationRequest request) {
 
-            Node mn = (Node) source;
-            Router fa = this;
+            Node mobileNode = (Node) source;
+            Router foreignAgent = this;
 
             // Network id
-            int nid = fa._RID;
+            int network_ID = foreignAgent.router_ID;
 
             // Start of the registration request
-            NetworkAddr hoa = mn.getAddr();
-            System.out.println(mn + " is migrating to network " + nid);
+            NetworkAddr homeAdress = mobileNode.getAddr();
+            System.out.println(mobileNode + " is migrating to network " + network_ID);
 
             // update IP address
-            mn._id = new NetworkAddr(nid, newNodeId());
-            NetworkAddr coa = mn.getAddr();
-            System.out.println("Node with home address " + hoa.toString() + " has been assigned the care-of address " + coa.toString());
+            mobileNode._id = new NetworkAddr(network_ID, newNodeId());
+            NetworkAddr careOfAddress = mobileNode.getAddr();
+            System.out.println("Node with home address " + homeAdress.toString() + " has been assigned the care-of address " + careOfAddress.toString());
 
             // Update the node's link
             Link l = new Link();
-            mn.setPeer(l);
+            mobileNode.setPeer(l);
 
             // Add the mobile node to the routing table of the foreign agent
             int freeSpot = nextFreeSlot();
-            fa.connectInterface(freeSpot, l, mn);
+            foreignAgent.connectInterface(freeSpot, l, mobileNode);
 
             // Create a binding in the home agent routing table
-            Router ha = request.homeAgent();
-            ha.bindings.put(hoa, coa);
+            Router homeAgent = request.homeAgent();
+            homeAgent.bindings.put(homeAdress, careOfAddress);
         }
     }
 }
