@@ -7,7 +7,7 @@ public class Mobility {
     {
         // Links
         Link a = new Link();
-        Link b = new Link();
+        Link b = new LossyLink(0,0,0.5);
         Link r = new Link();
         Link c = new Link();
 
@@ -17,16 +17,18 @@ public class Mobility {
         Node C = new Node(2, 3);
 
         //Connect hosts to links
-        A.setPeer(a);
-        B.setPeer(b);
-        C.setPeer(c);
+
 
         // Routers
         Router R1 = new Router(1, 4);
         Router R2 = new Router(2, 4);
 
-        BufferPackets homeagent = new BufferPackets(R1,R1.getSentPackets(),1, 1);
+        BufferPackets homeagent = new BufferPackets(R1,1, 1);
 
+        A.setPeer(a);
+        B.setPeer(b);
+        C.setPeer(c);
+        homeagent.setPeerB(r);
 
         // Wire up routers
         R1.connectInterface(0, a, A);
@@ -40,25 +42,18 @@ public class Mobility {
         // migrate B to network 2
         B.send(R2, new RegistrationRequest(R1), 0);
 
-        // A and C send two packets to B;
-        // B send two packets to A
-        // The first packets will be sent *before* B migrates
-        // The seconds packets will be sent *after* B migrates
+
         A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 3, 10, 0, 10);
 
+        ArrayList listRecv = B.getReceivedPackets();
+        System.out.println(listRecv);
         ArrayList list = R1.getSentPackets();
-        list.add(2);
-        list.add(1);
-        list.add(3);
+        list.removeAll(listRecv);
 
-        System.out.println(list);
-        for (int i = 0; i < list.size(); i++) {
 
-            int seq = (int) list.get(i);
-            homeagent.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(),1,seq, 10, 100);
-            System.out.println(list);
 
-        }
+        homeagent.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(),10, 100, list);
+
 
 //        C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
 //        B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 2, 40, 4, 20);

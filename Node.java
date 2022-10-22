@@ -16,6 +16,8 @@ public class Node extends SimEnt {
     private int _timeBetweenSending = 10;   //time between messages
     private int _toNetwork = 0;             // Sets the peer to communicate with. This node is single homed
     private int _toHost = 0;
+    protected ArrayList<Integer> receivedPackets = new ArrayList<>();
+
 
 
     public Node(int network, int node) {
@@ -61,6 +63,9 @@ public class Node extends SimEnt {
 //**********************************************************************************
 
 
+    public ArrayList<Integer> getReceivedPackets() {
+        return receivedPackets;
+    }
 
     // This method is called upon that an event destined for this node triggers.
     public void recv(SimEnt src, Event ev) {
@@ -68,12 +73,12 @@ public class Node extends SimEnt {
 
             if (_stopSendingAfter > _sentmsg) {
                 _sentmsg++;
+
                 System.out.println();
                 send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
                 send(this, new TimerEvent(), _timeBetweenSending);
 
                 System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
-
                 //Change interface after _msgSent amount massages
                 if (_sentmsg == _msgSent) {
                     System.out.println("Change interface " + _id.networkId() + "." + _id.nodeId() + " changing to interface " + _newInterfaceNumber);
@@ -87,7 +92,9 @@ public class Node extends SimEnt {
         if (ev instanceof Message) {
             System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " receives message with seq: " + ((Message) ev).seq() + " at time " + SimEngine.getTime());
             System.out.println("RECEIVED" + ((Message) ev).seq());
+            receivedPackets.add(((Message) ev).seq());
             System.out.println();
+
 
         }
     }

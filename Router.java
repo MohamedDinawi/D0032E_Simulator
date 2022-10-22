@@ -174,6 +174,7 @@ public class Router extends SimEnt {
             NetworkAddr msource = m.source();
             NetworkAddr mdestination = m.destination();
             NetworkAddr careOfAddress = bindings.get(mdestination);
+
             if (careOfAddress != null) {
                 // tunnel message to the care-of address
                 System.out.println("homeAgent: Tunneling message from " + mdestination.toString() + " to " + careOfAddress);
@@ -183,7 +184,7 @@ public class Router extends SimEnt {
 
             System.out.println("Router " + router_ID + " handles packet with seq: " + m.seq() + " from node: " + msource);
             sentPackets.add(m.seq());
-            System.out.println(sentPackets);
+//            System.out.println(sentPackets);
 
             SimEnt sendNext = getInterface(mdestination);
 
@@ -227,15 +228,7 @@ public class Router extends SimEnt {
             // Create a binding in the home agent routing table
             Router homeAgent = request.homeAgent();
             NetworkAddr homeAgentA = new NetworkAddr(homeAdress.networkId(), careOfAddress.nodeId());
-            System.out.println(homeAgentA + "A");
             homeAgent.bindings.put(homeAdress, careOfAddress);
-
-//
-//            send(_peer, new Message(homeAgentA, mobileNode._id , 1), 0);
-//            send(this, new TimerEvent(), 10);
-//            System.out.println("WW");
-
-
 
         }
 

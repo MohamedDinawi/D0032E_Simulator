@@ -91,7 +91,6 @@ public final class SimEngine implements Runnable {
 				_simTime=nextEventToExecute._msek;
 				handleToNextEvent._event.entering(handleToNextEvent._target);
 				handleToNextEvent._target.recv(handleToNextEvent._registrator, handleToNextEvent._event);
-				System.out.println(handleToNextEvent);
 				deregister(handleToNextEvent);
 			}
 		} while (!_quit);

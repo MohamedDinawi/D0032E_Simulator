@@ -1,7 +1,6 @@
 package Sim;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 
@@ -13,7 +12,7 @@ public class LossyLink extends Link {
     private double jitter;
     private int _now = 0;
     private double prevDelay;
-//    public List<Integer> lostpackets = new ArrayList<>();
+    public ArrayList<Integer> lostpackets = new ArrayList<>();
     public LossyLink(double delay, double jitter, double probability) {
 
         this.delay = delay;
@@ -22,10 +21,12 @@ public class LossyLink extends Link {
         this.rnd = new Random();
     }
 
+
+
     public void recv(SimEnt src, Event ev) {
 
         if (ev instanceof Message || ev instanceof ChangeInterface || ev instanceof BufferPackets){
-            System.out.println(ev instanceof BufferPackets);
+
             double rnd1 = Math.random();
             if (rnd1 > probability) {
 //                double nextdelay = Math.abs(this.delay + rnd.nextDouble(jitter + 1));
@@ -34,8 +35,7 @@ public class LossyLink extends Link {
                 System.out.println("Link recv msg with seq: " +
                         ((Message) ev).seq() + " , passes it through");
 //                System.out.println(((Message) ev).seq()+"LossylinkPacket");
-//                lostpackets.add(((Message) ev).seq());
-//                System.out.println(lostpackets+"LossylinkPacket");
+
 
 
 
