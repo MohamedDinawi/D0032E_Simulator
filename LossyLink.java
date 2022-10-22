@@ -32,8 +32,10 @@ public class LossyLink extends Link {
 //                double nextdelay = Math.abs(this.delay + rnd.nextDouble(jitter + 1));
 //                System.out.println("The next delay is  :" + nextdelay);
 
-                System.out.println("Link recv msg with seq: " +
-                        ((Message) ev).seq() + " , passes it through");
+                if (ev instanceof Message) {
+                    System.out.println("Link recv msg with seq: " +
+                            ((Message) ev).seq() + " , passes it through");
+                }
 //                System.out.println(((Message) ev).seq()+"LossylinkPacket");
 
 

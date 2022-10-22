@@ -9,7 +9,8 @@ import java.util.TreeMap;
 public final class SimEngine implements Runnable {
 
 	private static SimEngine _instance;
-	private final TreeMap _simTimeTree = new TreeMap();
+	@SuppressWarnings("rawtypes")
+	private  TreeMap _simTimeTree = new TreeMap();
 	private boolean _quit = false;
 	private static double _simTime = 0;
 	
@@ -76,8 +77,8 @@ public final class SimEngine implements Runnable {
 	
 	public void run()
 	{	
-		EventHandle handleToNextEvent=null;
-		SimTimeSlot nextEventToExecute=null;
+		EventHandle handleToNextEvent;
+		SimTimeSlot nextEventToExecute;
 		
 		do
 		{

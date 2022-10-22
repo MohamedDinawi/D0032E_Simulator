@@ -12,9 +12,7 @@ public class Router extends SimEnt {
     private int _interfaces;
     private int _now = 0;
 
-    public void setSentPackets(ArrayList<Integer> sentPackets) {
-        this.sentPackets = sentPackets;
-    }
+
 
     protected ArrayList<Integer> sentPackets = new ArrayList<>();
 
@@ -101,7 +99,7 @@ public class Router extends SimEnt {
 
     /// Returns a node id that's not currently being used
     private int newNodeId() {
-        int network_ID = 0;
+        int networkID = 0;
         while (true) {
             boolean taken = false;
             for (RouteTableEntry entry : _routingTable) {
@@ -110,14 +108,14 @@ public class Router extends SimEnt {
                 }
                 SimEnt dev = entry.node();
                 if (dev instanceof Node node) {
-                    if (node._id.nodeId() == network_ID) {
+                    if (node._id.nodeId() == networkID) {
                         taken = true;
                         break; // try another id
                     }
                 }
             }
             if (!taken) {
-                return network_ID;
+                return networkID;
             }
         }
     }
@@ -156,14 +154,6 @@ public class Router extends SimEnt {
 
     public ArrayList<Integer> getSentPackets() {
         return sentPackets;
-    }
-    protected SimEnt _peer;
-    public void setPeer(SimEnt peer) {
-        _peer = peer;
-
-        if (_peer instanceof Link) {
-            ((Link) _peer).setConnector(this);
-        }
     }
 
     // When messages are received at the router this method is called
@@ -206,14 +196,14 @@ public class Router extends SimEnt {
             Router foreignAgent = this;
 
             // Network id
-            int network_ID = foreignAgent.router_ID;
+            int networkID = foreignAgent.router_ID;
 
             // Start of the registration request
             NetworkAddr homeAdress = mobileNode.getAddr();
-            System.out.println(mobileNode + " is migrating to network " + network_ID);
+            System.out.println(mobileNode + " is migrating to network " + networkID);
 
             // update IP address
-            mobileNode._id = new NetworkAddr(network_ID, newNodeId());
+            mobileNode._id = new NetworkAddr(networkID, newNodeId());
             NetworkAddr careOfAddress = mobileNode.getAddr();
             System.out.println("Node with home address " + homeAdress.toString() + " has been assigned the care-of address " + careOfAddress.toString());
 

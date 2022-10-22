@@ -7,7 +7,7 @@ public class Mobility {
     {
         // Links
         Link a = new Link();
-        Link b = new LossyLink(0,0,0.5);
+        Link b = new LossyLink(0,0,0.05);
         Link r = new Link();
         Link c = new Link();
 
@@ -45,9 +45,9 @@ public class Mobility {
 
         A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 3, 10, 0, 10);
 
-        ArrayList listRecv = B.getReceivedPackets();
+        ArrayList<Integer> listRecv = B.getReceivedPackets();
         System.out.println(listRecv);
-        ArrayList list = R1.getSentPackets();
+        ArrayList<Integer> list = R1.getSentPackets();
         list.removeAll(listRecv);
 
 
@@ -56,7 +56,7 @@ public class Mobility {
 
 
 //        C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
-//        B.StartSending(A.getAddr().networkId(), A.getAddr().nodeId(), 2, 40, 4, 20);
+//        B.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 4, 20);
 
 
 
