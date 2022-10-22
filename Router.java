@@ -12,7 +12,16 @@ public class Router extends SimEnt {
     private int _interfaces;
     private int _now = 0;
 
+    public void setSentPackets(ArrayList<Integer> sentPackets) {
+        this.sentPackets = sentPackets;
+    }
 
+    protected ArrayList<Integer> sentPackets = new ArrayList<>();
+
+
+    public int getRouter_ID() {
+        return router_ID;
+    }
 
     // When created, number of interfaces are defined
     Router(int RouterID, int interfaces) {
@@ -89,40 +98,6 @@ public class Router extends SimEnt {
         }
     }
 
-    private void BufferPackets(NetworkAddr source,NetworkAddr destination, ArrayList<Integer> packetsToSend){
-        //        int j = 0;
-//        for (int i = 0; i < packets.size(); i++) {
-//            int addEV = packets.get(j) - 1;
-//            addPacketsEVToSend(packetsev.get(addEV));
-//            j++;
-
-    }
-
-//    public ArrayList<Event> EVToSend() {
-//        int j = 0;
-//        for (int i = 0; i < packets.size(); i++) {
-//            int addEV = packets.get(j) - 1;
-//            addPacketsEVToSend(packetsev.get(addEV));
-//            j++;
-//        }
-//        return packetsevToSend;
-//    }
-//    public void Buffer() {
-//        Node routerNode = new Node(1,3);
-//        System.out.println();
-//
-//        for (int i = 0; i < packetsevToSend.size(); i++) {
-//            Event event = packetsevToSend.get(i);
-//
-//
-//            System.out.println("RE Router handles packet with seq: " + ((Message) event).seq() + " from node: " + ((Message) event).source().networkId() + "." + ((Message) event).source().nodeId());
-//            SimEnt sendNext = getInterfaceA(((Message) event).destination().networkId());
-//            System.out.println("RE Router sends to node: " + ((Message) event).destination().networkId() + "." + ((Message) event).destination().nodeId());
-//
-//            routerNode.recv( sendNext, event);
-//
-//        }
-//    }
 
     /// Returns a node id that's not currently being used
     private int newNodeId() {
@@ -179,35 +154,23 @@ public class Router extends SimEnt {
         return -1;
     }
 
+    public ArrayList<Integer> getSentPackets() {
+        return sentPackets;
+    }
+    protected SimEnt _peer;
+    public void setPeer(SimEnt peer) {
+        _peer = peer;
+
+        if (_peer instanceof Link) {
+            ((Link) _peer).setConnector(this);
+        }
+    }
+
     // When messages are received at the router this method is called
     public void recv(SimEnt source, Event event) {
-        if (event instanceof ChangeInterface) {
 
-//            this.printAllInterfaces();
-            this.changeInterface(((ChangeInterface) event).getSource(), ((ChangeInterface) event).getNewInterfaceNumber());
-//            this.printAllInterfaces();
-
-        }
-
-        if (event instanceof BufferPackets) {
-
-//            this.printAllInterfaces();
-            this.BufferPackets(((BufferPackets) event).getSource(),((BufferPackets) event).getDestination(), ((BufferPackets) event).getPacketsToSend());
-//            this.printAllInterfaces();
-
-        }
-
-//        if (event instanceof Message)
-//        {
-//            System.out.println("Router handles packet with seq: " + ((Message) event).seq()+" from node: "+((Message) event).source().networkId()+"." + ((Message) event).source().nodeId() );
-//            SimEnt sendNext = getInterfaceA(((Message) event).destination().networkId());
-//            System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());
-//            send (sendNext, event, _now);
-//
-//        }
 
         if (event instanceof Message m) {
-
             NetworkAddr msource = m.source();
             NetworkAddr mdestination = m.destination();
             NetworkAddr careOfAddress = bindings.get(mdestination);
@@ -219,6 +182,8 @@ public class Router extends SimEnt {
             }
 
             System.out.println("Router " + router_ID + " handles packet with seq: " + m.seq() + " from node: " + msource);
+            sentPackets.add(m.seq());
+            System.out.println(sentPackets);
 
             SimEnt sendNext = getInterface(mdestination);
 
@@ -261,7 +226,26 @@ public class Router extends SimEnt {
 
             // Create a binding in the home agent routing table
             Router homeAgent = request.homeAgent();
+            NetworkAddr homeAgentA = new NetworkAddr(homeAdress.networkId(), careOfAddress.nodeId());
+            System.out.println(homeAgentA + "A");
             homeAgent.bindings.put(homeAdress, careOfAddress);
+
+//
+//            send(_peer, new Message(homeAgentA, mobileNode._id , 1), 0);
+//            send(this, new TimerEvent(), 10);
+//            System.out.println("WW");
+
+
+
         }
+
+        if (event instanceof ChangeInterface) {
+
+//            this.printAllInterfaces();
+            this.changeInterface(((ChangeInterface) event).getSource(), ((ChangeInterface) event).getNewInterfaceNumber());
+//            this.printAllInterfaces();
+        }
+
     }
 }
+

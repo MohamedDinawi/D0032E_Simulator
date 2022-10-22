@@ -1,4 +1,5 @@
 package Sim;
+
 import java.util.ArrayList;
 
 // This class implements a node (host) it has an address, a peer that it communicates with
@@ -11,24 +12,9 @@ public class Node extends SimEnt {
     protected int _seq = 0;
     private int _msgSent;
     private int _newInterfaceNumber;
-    private int _stopSendingAfter = 0; //messages
-    private int _timeBetweenSending = 10; //time between messages
-    private int _toNetwork = 0;
-
-    protected ArrayList<Integer> packetsRecv = new ArrayList<>();
-    protected ArrayList<Integer> sentPackets = new ArrayList<>();
-
-
-    public ArrayList<Integer> getPacketsToSend() {
-        return packetsToSend;
-    }
-
-    protected ArrayList<Integer> packetsToSend = new ArrayList<>();
-
-
-    private boolean isRecv = true;
-
-    // Sets the peer to communicate with. This node is single homed
+    private int _stopSendingAfter = 0;      //messages
+    private int _timeBetweenSending = 10;   //time between messages
+    private int _toNetwork = 0;             // Sets the peer to communicate with. This node is single homed
     private int _toHost = 0;
 
 
@@ -67,10 +53,6 @@ public class Node extends SimEnt {
         _msgSent = packetsSent;
         _newInterfaceNumber = interfaceNumber;
     }
-    public void bufferPackets( ArrayList<Integer> packetsToSend, int packetsSent) {
-        _msgSent = packetsSent;
-        sentPackets = packetsToSend;
-    }
 
     public String toString() {
         return "Node(" + getAddr().toString() + ")";
@@ -79,12 +61,8 @@ public class Node extends SimEnt {
 //**********************************************************************************
 
 
+
     // This method is called upon that an event destined for this node triggers.
-
-    public ArrayList<Integer> getPacketsRecv() {
-        return packetsRecv;
-    }
-
     public void recv(SimEnt src, Event ev) {
         if (ev instanceof TimerEvent) {
 
@@ -93,26 +71,15 @@ public class Node extends SimEnt {
                 System.out.println();
                 send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
                 send(this, new TimerEvent(), _timeBetweenSending);
+
                 System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
-                isRecv = false;
-                sentPackets.add(_seq);
-
-
-                if (_sentmsg == _msgSent) {
-                    System.out.println("Resending Lost Packets from " + _id.networkId() + "." + _id.nodeId() + " To " + _toNetwork);
-                    send(_peer, new BufferPackets(_id, new NetworkAddr(_toNetwork, _toHost), packetsToSend), 0);
-
-                }
-
 
                 //Change interface after _msgSent amount massages
-//                if (_sentmsg == _msgSent) {
-//                    System.out.println("Change interface " + _id.networkId() + "." + _id.nodeId() + " changing to interface " + _newInterfaceNumber);
-//                    send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
-//
-//                }
+                if (_sentmsg == _msgSent) {
+                    System.out.println("Change interface " + _id.networkId() + "." + _id.nodeId() + " changing to interface " + _newInterfaceNumber);
+                    send(_peer, new ChangeInterface(_id, _newInterfaceNumber), 0);
 
-
+                }
 
                 _seq++;
             }
@@ -121,10 +88,8 @@ public class Node extends SimEnt {
             System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " receives message with seq: " + ((Message) ev).seq() + " at time " + SimEngine.getTime());
             System.out.println("RECEIVED" + ((Message) ev).seq());
             System.out.println();
-            packetsRecv.add(((Message) ev).seq());
-            isRecv = true;
 
+        }
     }
-}
 
 }
