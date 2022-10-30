@@ -2,6 +2,8 @@ package Sim;
 
 // This class implements a link without any loss, jitter or delay
 
+import java.util.ArrayList;
+
 public class Link extends SimEnt{
 	protected SimEnt _connectorA=null;
 	protected SimEnt _connectorB=null;

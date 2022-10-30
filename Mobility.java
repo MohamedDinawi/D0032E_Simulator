@@ -6,10 +6,10 @@ public class Mobility {
     public static void main (String [] args)
     {
         // Links
-        Link a = new Link();
-        Link b = new LossyLink(0,0,0.05);
-        Link r = new Link();
-        Link c = new Link();
+        LossyLink a = new LossyLink(0,0,0);
+        LossyLink b = new LossyLink(0,0,0.55);
+        Link r = new LossyLink(0,0,0);
+        Link c = new LossyLink(0,0,0);
 
         // Hosts
         Node A = new Node(1, 1);
@@ -23,12 +23,10 @@ public class Mobility {
         Router R1 = new Router(1, 4);
         Router R2 = new Router(2, 4);
 
-        BufferPackets homeagent = new BufferPackets(R1,1, 1);
 
         A.setPeer(a);
         B.setPeer(b);
         C.setPeer(c);
-        homeagent.setPeerB(r);
 
         // Wire up routers
         R1.connectInterface(0, a, A);
@@ -45,14 +43,8 @@ public class Mobility {
 
         A.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 3, 10, 0, 10);
 
-        ArrayList<Integer> listRecv = B.getReceivedPackets();
-        System.out.println(listRecv);
-        ArrayList<Integer> list = R1.getSentPackets();
-        list.removeAll(listRecv);
 
-
-
-        homeagent.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(),10, 100, list);
+//        homeagent.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(),10, 100, list);
 
 
 //        C.StartSending(B.getAddr().networkId(), B.getAddr().nodeId(), 2, 40, 2, 10);
@@ -76,6 +68,8 @@ public class Mobility {
         }
 //        R1.printAllInterfaces(R1.get_routingTable());
 //        R2.printAllInterfaces(R2.get_routingTable());
+
+
     }
 }
 

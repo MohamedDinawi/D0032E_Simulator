@@ -12,10 +12,13 @@ public class Router extends SimEnt {
     private int _interfaces;
     private int _now = 0;
 
-
-
     protected ArrayList<Integer> sentPackets = new ArrayList<>();
+    protected ArrayList<Integer> receivedPackets = new ArrayList<>();
 
+
+
+//    protected ArrayList<Integer> sentPackets = new ArrayList<>();
+//
 
     public int getRouter_ID() {
         return router_ID;
@@ -96,7 +99,6 @@ public class Router extends SimEnt {
         }
     }
 
-
     /// Returns a node id that's not currently being used
     private int newNodeId() {
         int networkID = 0;
@@ -152,12 +154,28 @@ public class Router extends SimEnt {
         return -1;
     }
 
-    public ArrayList<Integer> getSentPackets() {
-        return sentPackets;
-    }
+
 
     // When messages are received at the router this method is called
     public void recv(SimEnt source, Event event) {
+
+        if (event instanceof BufferPackets && Node.sentPackets.size() >0){
+            ArrayList<Integer> list = Node.sentPackets;
+//            for (int i = 0; i < list.size(); i++){
+                int seqNr = list.get(0);
+
+                NetworkAddr _id = new NetworkAddr(1, 1);
+                send(this, new Message(_id, new NetworkAddr(1, 2), seqNr), 0);
+                send(this, new TimerEvent(), 0);
+                System.out.println();
+                System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " RESENDING message with seq: " + seqNr + " at time " + SimEngine.getTime());
+                System.out.println();
+
+            }
+
+
+
+
 
 
         if (event instanceof Message m) {
@@ -171,21 +189,22 @@ public class Router extends SimEnt {
                 mdestination = careOfAddress;
                 m.setDestination(careOfAddress);
             }
-
             System.out.println("Router " + router_ID + " handles packet with seq: " + m.seq() + " from node: " + msource);
-            sentPackets.add(m.seq());
-//            System.out.println(sentPackets);
 
+            sentPackets.add(m.seq());
             SimEnt sendNext = getInterface(mdestination);
 
             if (sendNext == null) {
                 System.err.println("Router " + router_ID + ": host " + mdestination + " is unreachable");
             } else {
-                System.out.println("Router sends to node: " + mdestination.toString());
+                System.out.println("Router "+ router_ID + " sends to node: " + mdestination.toString() +" Seq: "+m.seq());
 
                 send(sendNext, event, _now);
 
+
+
             }
+//            System.out.println(sentPackets);
         }
 
 
