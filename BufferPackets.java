@@ -6,7 +6,7 @@ public class BufferPackets implements Event{
 
     BufferPackets()
     {
-
+        super();
     }
 
 

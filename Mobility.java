@@ -7,7 +7,7 @@ public class Mobility {
     {
         // Links
         LossyLink a = new LossyLink(0,0,0);
-        LossyLink b = new LossyLink(0,0,0.55);
+        LossyLink b = new LossyLink(0,0,0.95);
         Link r = new LossyLink(0,0,0);
         Link c = new LossyLink(0,0,0);
 

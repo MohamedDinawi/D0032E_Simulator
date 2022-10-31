@@ -62,17 +62,15 @@ public class Node extends SimEnt {
 //**********************************************************************************
 
 
-//    public ArrayList<Integer> getReceivedPackets() {
-//        return receivedPackets;
-//    }
-
     // This method is called upon that an event destined for this node triggers.
     public void recv(SimEnt src, Event ev) {
 
 
         if (ev instanceof TimerEvent) {
 
+//          run after the first message has been sent
             if(sentPackets.size() >0) {
+
                 send(_peer, new BufferPackets(), 0);
             }
 
@@ -90,12 +88,17 @@ public class Node extends SimEnt {
         }
         if (ev instanceof Message) {
             System.out.println();
+
+
             System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " receives message with seq: " + ((Message) ev).seq() + " at time " + SimEngine.getTime());
+
+
 
             if (!sentPackets.isEmpty()){
                 sentPackets.remove(_seq);
                 System.out.println(sentPackets);}
             else {
+
                 System.out.println("All packets have been sent");
             }
 

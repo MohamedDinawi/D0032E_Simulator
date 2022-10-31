@@ -126,6 +126,8 @@ public class Router extends SimEnt {
         return _routingTable;
     }
 
+
+
     public void printAllInterfaces(RouteTableEntry[] _routingTable) {
         System.out.println("============================================");
         System.out.println("Node table for R" + router_ID);
@@ -143,6 +145,7 @@ public class Router extends SimEnt {
         System.out.println("============================================");
     }
 
+
     private int nextFreeSlot() {
         int i = 0;
         for (RouteTableEntry entry : _routingTable) {
@@ -155,27 +158,29 @@ public class Router extends SimEnt {
     }
 
 
-
     // When messages are received at the router this method is called
     public void recv(SimEnt source, Event event) {
 
+
+//        if there are sentPackets in the buffer, resend them
         if (event instanceof BufferPackets && Node.sentPackets.size() >0){
             ArrayList<Integer> list = Node.sentPackets;
-//            for (int i = 0; i < list.size(); i++){
                 int seqNr = list.get(0);
-
                 NetworkAddr _id = new NetworkAddr(1, 1);
-                send(this, new Message(_id, new NetworkAddr(1, 2), seqNr), 0);
+                NetworkAddr _dest = new NetworkAddr(1, 2);
+                Message msg = new Message(_id, _dest, seqNr);
+
+                send(this, msg, 0);
                 send(this, new TimerEvent(), 0);
+                Node.sentPackets.remove(0);
+
+
                 System.out.println();
                 System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " RESENDING message with seq: " + seqNr + " at time " + SimEngine.getTime());
                 System.out.println();
 
+
             }
-
-
-
-
 
 
         if (event instanceof Message m) {
